@@ -1,0 +1,430 @@
+name: CI Homework Autocheck
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  lab02-separate-compilation:
+    name: "Lab 02: 01 – Separate Compilation"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab02/01_separate_compilation
+        run: make
+
+      - name: Test
+        working-directory: hw/lab02/01_separate_compilation
+        run: pytest tests -v
+
+  lab02-auto-deps:
+    name: "Lab 02: 02 – Auto Sources & Dependencies"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab02/02_auto_deps
+        run: make
+
+      - name: Test
+        working-directory: hw/lab02/02_auto_deps
+        run: pytest tests -v
+
+  lab02-debug-release:
+    name: "Lab 02: 03 – Debug & Release Configurations"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build (Release)
+        working-directory: hw/lab02/03_debug_release
+        run: make MODE=release
+
+      - name: Build (Debug)
+        working-directory: hw/lab02/03_debug_release
+        run: make MODE=debug
+
+      - name: Test
+        working-directory: hw/lab02/03_debug_release
+        run: pytest tests -v
+
+  lab02-cmake-flags-version:
+    name: "Lab 02: 04 – CMake Flags & Version"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build & Test
+        working-directory: hw/lab02/04_cmake_flags_version
+        run: pytest tests -v
+
+  lab02-googletest:
+    name: "Lab 02: 05 – GoogleTest Integration"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build & Test
+        working-directory: hw/lab02/05_googletest
+        run: pytest tests -v
+
+  lab03-alignment:
+    name: "Lab 03: 01 – Address Alignment"
+    runs-on: ubuntu-latest
+    # needs + always() выносят задание дз3 в отдельный блок на графе:
+    # оно стартует после заданий lab02 и выполняется, даже если они упали.
+    needs:
+      - lab02-separate-compilation
+      - lab02-auto-deps
+      - lab02-debug-release
+      - lab02-cmake-flags-version
+      - lab02-googletest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab03/01_alignment
+        run: make
+
+      - name: Test
+        working-directory: hw/lab03/01_alignment
+        run: pytest tests -v
+
+  lab03-overflow-mul:
+    name: "Lab 03: 02 – Multiplication Overflow"
+    runs-on: ubuntu-latest
+    needs:
+      - lab02-separate-compilation
+      - lab02-auto-deps
+      - lab02-debug-release
+      - lab02-cmake-flags-version
+      - lab02-googletest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab03/02_overflow_mul
+        run: make
+
+      - name: Test
+        working-directory: hw/lab03/02_overflow_mul
+        run: pytest tests -v
+
+  lab03-byte-swap:
+    name: "Lab 03: 03 – Byte Order Reversal"
+    runs-on: ubuntu-latest
+    needs:
+      - lab02-separate-compilation
+      - lab02-auto-deps
+      - lab02-debug-release
+      - lab02-cmake-flags-version
+      - lab02-googletest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab03/03_byte_swap
+        run: make
+
+      - name: Test
+        working-directory: hw/lab03/03_byte_swap
+        run: pytest tests -v
+
+  lab03-wc:
+    name: "Lab 03: 04 – Simple wc"
+    runs-on: ubuntu-latest
+    needs:
+      - lab02-separate-compilation
+      - lab02-auto-deps
+      - lab02-debug-release
+      - lab02-cmake-flags-version
+      - lab02-googletest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab03/04_wc
+        run: make
+
+      - name: Test
+        working-directory: hw/lab03/04_wc
+        run: pytest tests -v
+
+  lab03-flags:
+    name: "Lab 03: 05 – Flags Register Emulator"
+    runs-on: ubuntu-latest
+    needs:
+      - lab02-separate-compilation
+      - lab02-auto-deps
+      - lab02-debug-release
+      - lab02-cmake-flags-version
+      - lab02-googletest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab03/05_flags
+        run: make
+
+      - name: Test
+        working-directory: hw/lab03/05_flags
+        run: pytest tests -v
+
+  lab03-vat:
+    name: "Lab 03: 06 – VAT in Kopecks"
+    runs-on: ubuntu-latest
+    needs:
+      - lab02-separate-compilation
+      - lab02-auto-deps
+      - lab02-debug-release
+      - lab02-cmake-flags-version
+      - lab02-googletest
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab03/06_vat
+        run: make
+
+      - name: Test
+        working-directory: hw/lab03/06_vat
+        run: pytest tests -v
+
+  lab04-minmax:
+    name: "Lab 04: 01 – Min & Max from Arguments"
+    runs-on: ubuntu-latest
+    # needs на все задания lab03 + always() выносят задание дз4 в отдельный
+    # (третий) блок на графе: оно стартует после lab03 и не зависит от их результата.
+    needs:
+      - lab03-alignment
+      - lab03-overflow-mul
+      - lab03-byte-swap
+      - lab03-wc
+      - lab03-flags
+      - lab03-vat
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab04/01_minmax
+        run: make
+
+      - name: Test
+        working-directory: hw/lab04/01_minmax
+        run: pytest tests -v
+
+  lab04-strcmp:
+    name: "Lab 04: 02 – strcmp with Pointers"
+    runs-on: ubuntu-latest
+    needs:
+      - lab03-alignment
+      - lab03-overflow-mul
+      - lab03-byte-swap
+      - lab03-wc
+      - lab03-flags
+      - lab03-vat
+    if: ${{ always() }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Build
+        working-directory: hw/lab04/02_strcmp
+        run: make
+
+      - name: Test
+        working-directory: hw/lab04/02_strcmp
+        run: pytest tests -v
