@@ -1,0 +1,7 @@
+**/calculator
+**/solution
+**/obj/
+**/build/
+**/__pycache__/
+**/.pytest_cache/
+*.pyc
